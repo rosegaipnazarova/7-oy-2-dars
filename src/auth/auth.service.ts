@@ -4,6 +4,7 @@ import { UpdateAuthDto } from './dto/update-auth.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Auth } from './model/auth.entity';
 import * as bcrypt from "bcrypt"
+import { Article } from 'src/article/model/article.entity';
 
 
 @Injectable()
@@ -22,8 +23,11 @@ export class AuthService {
     return this.authModel.create({username, email, password : hashPassword, otp});
   }
 
-  findAll() {
-    return `This action returns all auth`;
+  async findAll() {
+    return await this.authModel.findAll({
+      attributes: {exclude: ['password']},
+      include:[{model: Article}]
+    })
   }
 
   findOne(id: number) {

@@ -1,26 +1,42 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
+import { Article } from './model/article.entity';
+import { InjectModel } from '@nestjs/sequelize';
 
 @Injectable()
 export class ArticleService {
-  create(createArticleDto: CreateArticleDto) {
-    return 'This action adds a new article';
+  constructor (@InjectModel(Article) private articleModel : typeof Article) {}
+  async create(createArticleDto: CreateArticleDto) {
+    return await this.articleModel.create({...createArticleDto})
   }
 
-  findAll() {
-    return `This action returns all article`;
+  async findAll(): Promise<Article[]> {
+    return await this.articleModel.findAll()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} article`;
+  async findOne(id: number) : Promise<Article>  {
+    const foundedArticle = await this.articleModel.findByPk(id)
+    if(!foundedArticle) throw new NotFoundException("Article not found")
+
+
+    return foundedArticle
   }
 
-  update(id: number, updateArticleDto: UpdateArticleDto) {
-    return `This action updates a #${id} article`;
+  async update(id: number, updateArticleDto: UpdateArticleDto) : Promise<{message: "Updated"}>  {
+
+    const foundedArticle = await this.articleModel.findByPk(id)
+    if(!foundedArticle) throw new NotFoundException("Article not found")
+    await this.articleModel.update(updateArticleDto,{where: {id}, returning: true})
+
+    return {message: "Updated"}
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} article`;
+ async remove(id: number): Promise<{message: string }>  {
+       const foundedArticle = await this.articleModel.findByPk(id)
+    if(!foundedArticle) throw new NotFoundException("Article not found")
+    await this.articleModel.destroy({where: {id}})
+
+    return {message: "Deleted"}
   }
 }
