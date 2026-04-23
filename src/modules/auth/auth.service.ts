@@ -14,7 +14,7 @@ import { access } from 'fs';
 
 @Injectable()
 export class AuthService {
-  private nodemailer: nodemailer.Trasporter
+  private nodemailer: nodemailer.Trasporter;
 
   constructor (
     @InjectRepository(Auth) private authRepo: Repository <Auth>,
@@ -69,7 +69,7 @@ export class AuthService {
 
       const now = Date.now()
       if(foundedUser.otpTime && foundedUser.otpTime<now) throw new BadRequestException("Otp expired")
-        await this.authRepo.update(foundedUser.id,{otp:"",otpTime:0})
+        await this.authRepo.update(foundedUser.id!,{otp:"",otpTime:0})
 
       const payload ={username: foundedUser.username, role: foundedUser.role};
       return{

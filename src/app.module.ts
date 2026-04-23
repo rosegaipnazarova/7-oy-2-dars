@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './modules/auth/auth.module';
-import { ArticleModule } from './modules/article/article.module';
+//import { ArticleModule } from './modules/article/article.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Auth } from './modules/auth/entities/auth.entity';
 
@@ -20,7 +20,7 @@ import { Auth } from './modules/auth/entities/auth.entity';
       logging: false
     }),
     AuthModule,
-    ArticleModule
+   // ArticleModule
   ],
   controllers: [],
   providers: [],

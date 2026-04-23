@@ -1,7 +1,7 @@
 
 
 import { RoleUser } from "src/shared/enums/role.enum";
-import { BaseEntity, Column, Entity} from "typeorm";
+import { BaseEntity, Column, Entity, FindOptionsWhere, ObjectId} from "typeorm";
 
 
 @Entity({name: "auth"})
@@ -24,7 +24,7 @@ export class Auth extends BaseEntity{
 
   @Column({type: "bigint", nullable: true})
   otpTime!: number;
-  id: string | number | FindOptionsWhere<Auth> | FindOptionsWhere<Auth>[] | Date | ObjectId | number[] | string[] | Date[] | ObjectId[];
+  id: string | number | FindOptionsWhere<Auth> | FindOptionsWhere<Auth>[] | Date | ObjectId | number[] | string[] | Date[] | ObjectId[] | undefined;
 
 
     // @HasMany(()=> Article)

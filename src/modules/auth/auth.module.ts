@@ -10,8 +10,8 @@ import { JwtModule } from '@nestjs/jwt';
     TypeOrmModule.forFeature([Auth]),
     JwtModule.register({
       global: true,
-      secret:process.env.SECRET_KEY,
-      signOptions:{expiresIn:'60s'}
+      secret:process.env.SECRET_KEY || "notgiven",
+      signOptions:{expiresIn:'19000s'}
     })
   ],
   controllers: [AuthController],
