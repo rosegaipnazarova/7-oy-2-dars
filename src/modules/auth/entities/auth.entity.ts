@@ -1,5 +1,6 @@
 
 
+import { RoleUser } from "src/shared/enums/role.enum";
 import { BaseEntity, Column, Entity} from "typeorm";
 
 
@@ -15,13 +16,13 @@ export class Auth extends BaseEntity{
     @Column()
     password!:string;
 
-    @Column({type:'enum'})
-    role!: string;
+    @Column({type:'enum', enum: RoleUser, default: RoleUser.USER})
+    role!: RoleUser;
 
-    @Column()
+    @Column({nullable: true})
     otp!:string;
 
-  @Column({type: "bigint"})
+  @Column({type: "bigint", nullable: true})
   otpTime!: number;
 
 

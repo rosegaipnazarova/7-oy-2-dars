@@ -13,8 +13,8 @@ import { Auth } from './modules/auth/entities/auth.entity';
       host: "localhost",
       port: 5432,
       username: "postgres",
-      database: String(process.env.DB_NAME as string),
-      password: String(process.env.DB_PASSWORD as string),
+      database: String(process.env.DB_NAME as string) , 
+      password: String(process.env.DB_PASSWORD as string), 
       entities: [Auth],
       synchronize: true,
       logging: false

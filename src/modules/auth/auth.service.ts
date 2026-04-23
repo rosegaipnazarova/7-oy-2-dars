@@ -5,11 +5,24 @@ import { Auth } from './entities/auth.entity';
 import * as bcrypt from "bcrypt"
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as nodemailer from "nodemailer"
+import { from } from 'rxjs';
 
 
 @Injectable()
 export class AuthService {
-  constructor (@InjectRepository(Auth) private authRepo: Repository <Auth>) {}
+  private nodemailer: nodemailer.Trasporter
+
+  constructor (@InjectRepository(Auth) private authRepo: Repository <Auth>) {
+    this.nodemailer = nodemailer.createTranport({
+      service: "gmail",
+      auth: {
+        user: "rosegaipnazarova@gmail.com",
+        pass: process.env.APP_KEY
+      }
+    })
+
+  }
   async register(createAuthDto: CreateAuthDto) {
     const {username, email, password} = createAuthDto
     const foundedUser = await this.authRepo.findOne({where: {email}})
@@ -18,12 +31,21 @@ export class AuthService {
 
       const hashPassword = await bcrypt.hash(password, 10)
 
-      const otp = +Array.from({length: 6}, () => Math.floor(Math.random() * 9)).join("")
+      const otp = Array.from({length: 6}, () => Math.floor(Math.random() * 9)).join("")
 
-      const time = Date.now()
-      const user = this.authRepo.create({username, email, password : hashPassword, otp, otpTime: time})
+      const time = Date.now()+12000
 
-    return ;
+      await this.nodemailer.sendMail({
+        from: "rosegaipnazarova@gmail.com",
+        to: email,
+        subject: "lesson",
+        text: "test content",
+        html: `<b>${otp}</b>`
+      })
+
+      const user = this.authRepo.create({username, email, password : hashPassword, otp: otp, otpTime: time})
+      await this.authRepo.save(user)
+    return {message:"Registered"} ;
   }
 
   // async findAll() {
@@ -33,15 +55,15 @@ export class AuthService {
   //   })
   // }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
+  // findOne(id: number) {
+  //   return `This action returns a #${id} auth`;
+  // }
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
+  // update(id: number, updateAuthDto: UpdateAuthDto) {
+  //   return `This action updates a #${id} auth`;
+  // }
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
-  }
+  // remove(id: number) {
+  //   return `This action removes a #${id} auth`;
+  // }
 }
