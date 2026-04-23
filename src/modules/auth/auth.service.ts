@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { Auth } from './entities/auth.entity';
@@ -7,13 +7,19 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as nodemailer from "nodemailer"
 import { from } from 'rxjs';
+import { VerifyDto } from './dto/verify.dto';
+import { JwtService } from '@nestjs/jwt';
+import { access } from 'fs';
 
 
 @Injectable()
 export class AuthService {
   private nodemailer: nodemailer.Trasporter
 
-  constructor (@InjectRepository(Auth) private authRepo: Repository <Auth>) {
+  constructor (
+    @InjectRepository(Auth) private authRepo: Repository <Auth>,
+    private jwtService: JwtService
+  ) {
     this.nodemailer = nodemailer.createTranport({
       service: "gmail",
       auth: {
@@ -46,6 +52,30 @@ export class AuthService {
       const user = this.authRepo.create({username, email, password : hashPassword, otp: otp, otpTime: time})
       await this.authRepo.save(user)
     return {message:"Registered"} ;
+  }
+
+  async verify(dto: VerifyDto){
+    const {email, otp} = dto
+
+    const foundedUser = await this.authRepo.findOne({where: {email}})
+
+    const otpValidation = /^\s{6}$/.test(otp)
+
+    if(otpValidation) throw new BadRequestException("Invalid otp")
+
+    if(!foundedUser) throw new UnauthorizedException("Email not found")
+
+    if(foundedUser.otp !== otp) throw new BadRequestException("Wrong otp")
+
+      const now = Date.now()
+      if(foundedUser.otpTime && foundedUser.otpTime<now) throw new BadRequestException("Otp expired")
+        await this.authRepo.update(foundedUser.id,{otp:"",otpTime:0})
+
+      const payload ={username: foundedUser.username, role: foundedUser.role};
+      return{
+        access_token: await this.jwtService.signAsync(payload)
+      }
+
   }
 
   // async findAll() {
