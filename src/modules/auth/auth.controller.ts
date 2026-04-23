@@ -12,10 +12,10 @@ export class AuthController {
     return this.authService.register(createAuthDto);
   }
 
-  @Get()
-  findAll() {
-    return this.authService.findAll();
-  }
+  // @Get()
+  // findAll() {
+  //   return this.authService.findAll();
+  // }
 
   @Get(':id')
   findOne(@Param('id') id: string) {

@@ -1,8 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
-import { Article } from './model/article.entity';
-import { InjectModel } from '@nestjs/sequelize';
+import { Article } from './entities/article.entity';
 
 @Injectable()
 export class ArticleService {
