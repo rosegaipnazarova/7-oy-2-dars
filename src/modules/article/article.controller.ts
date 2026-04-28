@@ -38,8 +38,8 @@ export class ArticleController {
       })
     })
   )
-  create(@Body() createArticleDto: CreateArticleDto, @UploadedFile() file: Express.Multer.File) {
-    return this.articleService.create(createArticleDto, file);
+  create(@Body() createArticleDto: CreateArticleDto, @UploadedFile() file: Express.Multer.File,userId) {
+    return this.articleService.create(createArticleDto, file,userId);
   }
 
 

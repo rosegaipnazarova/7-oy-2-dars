@@ -1,7 +1,9 @@
 
 
+import { Article } from "src/modules/article/entities/article.entity";
+import { Tag } from "src/modules/tag/entities/tag.entity";
 import { RoleUser } from "src/shared/enums/role.enum";
-import { BaseEntity, Column, Entity, FindOptionsWhere, ObjectId, PrimaryGeneratedColumn} from "typeorm";
+import { BaseEntity, Column, Entity, FindOptionsWhere, ObjectId, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 
 
 @Entity({name: "auth"})
@@ -27,6 +29,21 @@ export class Auth extends BaseEntity{
 
   @PrimaryGeneratedColumn()
     id!: number;
+
+
+
+
+    //relations
+   @OneToMany(() => Article, (article) => article.author)
+  articles!: Article[];
+
+  @OneToMany(() => Tag, (tag) => tag.createdBy)
+  tags!: Tag[];
+
+
+
+
+
   // id: string | number | FindOptionsWhere<Auth> | FindOptionsWhere<Auth>[] | Date | ObjectId | number[] | string[] | Date[] | ObjectId[] | undefined;
 
 
