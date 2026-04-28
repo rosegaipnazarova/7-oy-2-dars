@@ -1,34 +1,43 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { BaseEntity } from "src/database/entities/base.entity";
 import { Column, Entity } from "typeorm";
 
 
 
-@Entity({name: 'articles'})
-export class Article extends BaseEntity{
-    
-      @Column()
-    title!:string;
+@Entity({ name: 'articles' })
+export class Article extends BaseEntity {
 
-    @Column()
-    description!:string;
-    
-    @Column()
-    imageUrl!:string;
+  @Column()
+  @ApiProperty()
+  title!: string;
 
-    @Column()
-    content!:boolean;
+  @Column()
+  @ApiProperty()
+  description!: string;
 
-    @Column()
-    ispublished!:boolean;
+  @Column()
+  backgroundImage!: string;
 
-    // @ForeignKey(()=> Auth)
-    // @Column({
-    //     type:DataType.INTEGER,
-    //     allowNull:false
-    // })
-    // userId!: number
+  @Column()
+  @ApiProperty()
+  imageUrl!: string;
 
-    // @BelongsTo(()=>Auth)
-    // user_id!: number
+  @Column()
+  @ApiProperty()
+  content!: string;
+
+  @Column()
+  @ApiProperty()
+  ispublished!: boolean;
+
+  // @ForeignKey(()=> Auth)
+  // @Column({
+  //     type:DataType.INTEGER,
+  //     allowNull:false
+  // })
+  // userId!: number
+
+  // @BelongsTo(()=>Auth)
+  // user_id!: number
 
 }
