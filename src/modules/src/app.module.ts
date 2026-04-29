@@ -7,7 +7,6 @@ import { Auth } from './modules/auth/entities/auth.entity';
 import { Article } from './modules/article/entities/article.entity';
 import { TagModule } from './modules/tag/tag.module';
 import { Tag } from './modules/tag/entities/tag.entity';
-import { ArticleImageModule } from './modules/article_image/article_image.module';
 
 
 @Module({
@@ -19,14 +18,13 @@ import { ArticleImageModule } from './modules/article_image/article_image.module
       username: "postgres",
       database: String(process.env.DB_NAME as string) , 
       password: String(process.env.DB_PASSWORD as string), 
-      entities: [Auth, Article, Tag, ArticleImageModule],
+      entities: [Auth, Article, Tag],
       synchronize: true,
       logging: false
     }),
     AuthModule,
     ArticleModule,
-    TagModule,
-    ArticleImageModule
+    TagModule
   ],
   controllers: [],
   providers: [],

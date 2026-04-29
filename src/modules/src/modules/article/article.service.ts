@@ -5,7 +5,6 @@ import { In, Repository } from 'typeorm';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { Tag } from '../tag/entities/tag.entity';
-import { QueryDto } from './dto/query.dto';
 
 @Injectable()
 export class ArticleService {
@@ -25,31 +24,8 @@ export class ArticleService {
     return await this.articleRepo.save(article)
   }
 
-  async findAll(queryDto: QueryDto) {
-const { page = 1, limit = 10, search } = queryDto
-const queryBuilder = await this.articleRepo.createQueryBuilder("article")
-.leftJoinAndSelect ("article. tags","tags" )
-.where("article.deletedAt is null")
-
-if(search){
-  queryBuilder.andWhere("article.title ILIKE :search or article.content ILIKE :search or tags.name ILKE :search",{search:`%${search}%`})
-}
-
-const result = await queryBuilder
-.orderBy("article.createdAt", "DESC")
-.skip((page-1)*limit)
-.take(limit)
-.getMany()
-
-const total = await queryBuilder.getCount()
-
-return {
-  totalPage: Math.ceil(total / limit),
-  prev:page>1 ? {page: page-1, limit} : undefined,
-  next:page * limit < total ? {page: page+1, limit} : undefined,
-  result,
-}
-
+  async findAll(): Promise<Article[]> {
+    return await this.articleRepo.find()
   }
 
   async findOne(id: number) : Promise<Article>  {
